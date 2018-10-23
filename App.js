@@ -1,18 +1,73 @@
-import React from 'react';
-import { StyleSheet, Text, View, } from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View, FlatList, } from 'react-native';
 import TodoInput from './src/component/TodoInput';
+import TodoItem from './src/component/TodoItem';
 
-export default class App extends React.Component {
-  _onPress = (text) => {
-    console.log(text);
+export default class App extends Component<{}> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      list: [],
+    };
   }
+
+  _delete = (index) => () => {
+    const list = [].concat(this.state.list);
+    list.splice(index, 1);
+
+    this.setState({
+      list,
+    });
+  }
+
+  _done = (index) => () => {
+    const list = [].concat(this.state.list);
+    list[index].done = !list[index].done;
+
+    this.setState({
+      list,
+    });
+  }
+
+  _onPress = (text) => {
+    const list = [].concat(this.state.list);
+
+    list.push({
+      key: Date.now(),
+      text: text,
+      done: false,
+    });
+
+    this.setState({
+      list,
+    });
+  }
+
   render() {
+    const {
+      list,
+    } = this.state;
+
     return (
       <View style={styles.container}>
         <View style={styles.main}>
-          <TodoInput _onPress={this._onPress} />
-        </View>
-      </View>
+          <TodoInput onPress={this._onPress} />
+          <View style={styles.todoListContainer}>
+            <FlatList
+              style={styles.todoList}
+              data={list}
+              renderItem={({ item, index }) => (
+                <TodoItem
+                  onDone={this._done(index)}
+                  onDelete={this._delete(index)}
+                  {...item}
+                />
+              )}
+            />
+          </View>
+         </View>
+       </View>
     );
   }
 }
@@ -23,11 +78,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     paddingTop: 40,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   main: {
     flex: 1,
     maxWidth: 400,
     alignItems: 'center'
+  },
+  todoListContainer: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  todoList: {
+    paddingLeft: 10,
+    paddingRight: 10,
   }
 });

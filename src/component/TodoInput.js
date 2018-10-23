@@ -40,7 +40,7 @@ export default class TodoInput extends Component {
   }
 
   _onPress = () => {
-    this.props.onPress(this.ref_lastNativeText);
+    this.props.onPress(this.ref._lastNativeText);
     this.ref.setNativeProps({ text: '' });
   }
 
@@ -51,11 +51,13 @@ export default class TodoInput extends Component {
 
     return (
       <View style={styles.container}>
-        <TextInput style={styles.textInput}
-         ref={(ref) => { this.ref = ref; }}
+        <TextInput
+          style={styles.textInput}
+          ref={(ref) => { this.ref = ref; }}
         />
-        <TouchableOpacity style={styles.button}
-         onPress={this._onPress}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={this._onPress}
         >
           <Text style={styles.buttonText}>追加</Text>
         </TouchableOpacity>
